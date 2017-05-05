@@ -1,0 +1,2 @@
+# ShadowsocksR_onekey_shell
+ShadowsocksR_onekey_shell for exercise
