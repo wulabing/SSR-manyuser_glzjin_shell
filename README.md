@@ -1,2 +1,3 @@
 # ShadowsocksR_onekey_shell
-ShadowsocksR_onekey_shell for exercise
+
+编辑中 暂不可用
