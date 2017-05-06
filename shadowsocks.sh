@@ -1,12 +1,12 @@
-#!/bin/bash
+!/bin/bash
 
 #====================================================
 #	System Request:Debian 7+/Ubuntu 14.04+/Centos 6+
 #	Author:	wulabing
 #	Dscription: SSR glzjin server for manyuser (only)
 #	Version: 1.1
-#	Blog: https://www.wulabing.com
-#	Special thanks: Toyo
+# 	Blog: https://www.wulabing.com
+#   Special thanks: Toyo
 #====================================================
 
 sh_ver="1.1"
@@ -131,3 +131,4 @@ SSR_installation(){
 }
 
 SSR_installation
+
