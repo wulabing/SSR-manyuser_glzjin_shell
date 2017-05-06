@@ -5,8 +5,8 @@
 #	Author:	wulabing
 #	Dscription: SSR glzjin server for manyuser (only)
 #	Version: 1.1
-# 	Blog: https://www.wulabing.com
-#   Special thanks: Toyo
+#	Blog: https://www.wulabing.com
+#	Special thanks: Toyo
 #====================================================
 
 sh_ver="1.1"
