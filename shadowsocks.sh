@@ -3,29 +3,32 @@
 #====================================================
 #	System Request:Debian 7+/Ubuntu 14.04+/Centos 6+
 #	Author:	wulabing
-#	Dscription: SSR server + lotserver
-#	Version: 1.0
+#	Dscription: SSR glzjin server for manyuser (only)
+#	Version: 1.1
 # 	Blog: https://www.wulabing.com
 #   Special thanks: Toyo
 #====================================================
 
-config_folder="/etc/shadowsocksr"
-config_file="/etc/shadowsocksr/user-config.json"
+sh_ver="1.1"
+libsodium_folder="/etc/libsodium"
 
-#字体特殊颜色
+#fonts color
 Green="\033[32m" 
 Red="\033[31m" 
+Yellow="\033[33m"
 GreenBG="\033[42;37m"
 RedBG="\033[41;37m"
 Font="\033[0m"
 
 
-#警示信息
+#notification information
 Info="${Green}[Info]${Font}"
+OK="${Green}[OK]${Font}"
 Error="${Red}[Error]${Font}"
-Tip="${Green}[Notification]${Font}"
+Notification="${Yellow}[Notification]${Font}"
+
 check_system(){
-	if [ -f /etc/redhat-system ]; then
+	if [[ -f /etc/redhat-system ]]; then
 		system="centos"
 	elif cat /etc/issue | grep -q -E -i "debian"; then
 		system="debian"
@@ -39,35 +42,88 @@ check_system(){
 		system="ubuntu"
 	elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
 		system="centos"
+	else 
+		system="other"
     fi
-	bit=`uname -m`
 }
-dependency_installation(){
-	if [ ${system} -eq "centos" ]; then
-		yum install vim wget git -y
-	elif [ ${system} -eq "debian" || ${system} -eq "ubuntu" ]; then
-		apt-get install vim wget git -y
+basic_installation(){
+	if [[ ${system} == "centos" ]]; then
+		yum -y install vim tar wget git 
+	elif [[ ${system} == "debian" || ${system} == "ubuntu" ]]; then
+		apt-get update
+		apt-get -y install vim tar wget git 
 	else
-		echo "${Error} Don't support this System"
+		echo -e "${Error} Don't support this System"
 		exit 1
+	fi
+}
+
+dependency_installation(){
+	if [[ ${system} == "centos" ]]; then
+		yum -y install python-setuptools && easy_install pip
+		yum -y install git
+	elif [[ ${system} == "debian" || ${system} == "ubuntu" ]]; then
+		apt-get -y install python-setuptools && easy_install pip
+		apt-get -y install git
+	fi
+	
+}
+development_tools_installation(){
+	if [[ ${system} == "centos" ]]; then
+		yum -y groupinstall "Development Tools"
+		if [[ $? -ne 0 ]]; then
+			echo -e "${Error} Development Tools installation FAIL"
+			exit 1
+		fi
+	else
+		apt-get -y install build-essential 
+		if [[ $? -ne 0 ]]; then
+			echo -e "${Error} build-essential installation FAIL"
+			exit 1
+		fi
+	fi
+	
+}
+libsodium_installation(){
+	mkdir -p ${libsodium_folder} && cd ${libsodium_folder}
+	wget https://github.com/jedisct1/libsodium/releases/download/1.0.10/libsodium-1.0.10.tar.gz
+	if [[ ! -f ${libsodium_folder}/libsodium-1.0.10.tar.gz ]]; then
+		echo -e "${Error} libsodium download FAIL"
+		exit 1
+	fi
+	tar xf libsodium-1.0.10.tar.gz && cd libsodium-1.0.10
+	./configure && make -j2 && make install
+	if [[ $? -ne 0 ]]; then 
+		echo -e "${Error} libsodium install FAIL"
+		exit 1
+	fi
+	echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
+	ldconfig
+}
+SSR_dependency_installation(){
+	if [[ ${system} == "centos" ]]; then
+		cd /root/shadowsocks
+		yum -y install python-devel
+		yum -y install libffi-devel
+		yum -y install openssl-devel
+		pip install -r requirements.txt		
+	else
+		pip install cymysql
+	fi
 }
 
 SSR_installation(){
-	if [ -f ${config_file} || -f ${config_folder} ]; then
-		echo -e "shadowsocksr has been installed"
-		exit 1
-	fi
+	check_system
+	basic_installation
+	dependency_installation
+	development_tools_installation
+	libsodium_installation
+	SSR_dependency_installation
 	
-	dependency_installation 
+	cd /root && git clone -b manyuser https://github.com/glzjin/shadowsocks.git 
+	cd shadowsocks && cp apiconfig.py userapiconfig.py && cp config.json user-config.json
 	
-	cd "/etc"
-	git clone https://github.com/shadowsocksr/shadowsocksr.git
-	if [ !  -d ${config_folder} ]; then
-		echo -e "${Error} ShadowsocksR download FAIL"
-		exit 1
-	fi
-	
-	
-
-		
+	echo -e "${OK} SSR manyuser for glzjin installation complete"
 }
+
+SSR_installation
