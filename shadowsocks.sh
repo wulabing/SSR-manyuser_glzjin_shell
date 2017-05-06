@@ -11,6 +11,8 @@
 
 sh_ver="1.1"
 libsodium_folder="/etc/libsodium"
+shadowsocks_install_folder="/root"
+shadowsocks_folder="${shadowsocks_install_folder}/shadowsocks"
 
 #fonts color
 Green="\033[32m" 
@@ -102,7 +104,7 @@ libsodium_installation(){
 }
 SSR_dependency_installation(){
 	if [[ ${system} == "centos" ]]; then
-		cd /root/shadowsocks
+		cd ${shadowsocks_folder}
 		yum -y install python-devel
 		yum -y install libffi-devel
 		yum -y install openssl-devel
@@ -118,10 +120,12 @@ SSR_installation(){
 	dependency_installation
 	development_tools_installation
 	libsodium_installation
-	SSR_dependency_installation
 	
-	cd /root && git clone -b manyuser https://github.com/glzjin/shadowsocks.git 
+	
+	cd ${shadowsocks_install_folder} && git clone -b manyuser https://github.com/glzjin/shadowsocks.git 
 	cd shadowsocks && cp apiconfig.py userapiconfig.py && cp config.json user-config.json
+	
+	SSR_dependency_installation
 	
 	echo -e "${OK} SSR manyuser for glzjin installation complete"
 }
