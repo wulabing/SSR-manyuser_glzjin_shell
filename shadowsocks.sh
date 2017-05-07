@@ -4,16 +4,17 @@
 #	System Request:Debian 7+/Ubuntu 14.04+/Centos 6+
 #	Author:	wulabing
 #	Dscription: SSR glzjin server for manyuser (only)
-#	Version: 2.0
+#	Version: 2.1
 #	Blog: https://www.wulabing.com
 #	Special thanks: Toyo
 #====================================================
 
-sh_ver="2.0"
+sh_ver="2.1"
 libsodium_folder="/etc/libsodium"
 shadowsocks_install_folder="/root"
 shadowsocks_folder="${shadowsocks_install_folder}/shadowsocks"
 config="${shadowsocks_folder}/userapiconfig.py"
+debian_sourcelist="/etc/apt/source.list"
 
 #fonts color
 Green="\033[32m" 
@@ -53,6 +54,7 @@ basic_installation(){
 	if [[ ${system} == "centos" ]]; then
 		yum -y install vim tar wget git 
 	elif [[ ${system} == "debian" || ${system} == "ubuntu" ]]; then
+		sed -i '/^deb cdrom/'d /etc/apt/sources.list
 		apt-get update
 		apt-get -y install vim tar wget git 
 	else
@@ -144,7 +146,7 @@ modify_WEBAPI_TOKEN(){
 }
 modify_MYSQL(){
 	sed -i '/MYSQL_HOST/c \MYSQL_HOST = '\'${MYSQL_HOST}\''' ${config}
-	sed -i '/MYSQL_PORT/c \MYSQL_PORT = '\'${MYSQL_PORT}\''' ${config}
+	sed -i '/MYSQL_PORT/c \MYSQL_PORT = '${MYSQL_PORT}'' ${config}
 	sed -i '/MYSQL_USER/c \MYSQL_USER = '\'${MYSQL_USER}\''' ${config}
 	sed -i '/MYSQL_PASS/c \MYSQL_PASS = '\'${MYSQL_PASS}\''' ${config}
 	sed -i '/MYSQL_DB/c \MYSQL_DB = '\'${MYSQL_DB}\''' ${config}
@@ -173,13 +175,15 @@ common_set(){
 	[[ -z ${MU_REGEX} ]] && MU_REGEX="%5m%id.%suffix"	
 }
 modwebapi_set(){
-	stty erase '^H' && read -p "WEBAPI_URL:" WEBAPI_URL
-	stty erase '^H' && read -p "WEBAPI_TOKEN:" WEBAPI_TOKEN
+	stty erase '^H' && read -p "WEBAPI_URL(example: https://www.zhaoj.in):" WEBAPI_URL
+	stty erase '^H' && read -p "WEBAPI_TOKEN(example: zhaoj.in):" WEBAPI_TOKEN
 }
 mysql_set(){
-	stty erase '^H' && read -p "MYSQL_HOST:" MYSQL_HOST
-	stty erase '^H' && read -p "MYSQL_PORT:" MYSQL_PORT
-	stty erase '^H' && read -p "MYSQL_USER:" MYSQL_USER
+	stty erase '^H' && read -p "MYSQL_HOST(IP addr):" MYSQL_HOST
+	stty erase '^H' && read -p "MYSQL_PORT(default:3306):" MYSQL_PORT
+	[[ -z ${MYSQL_PORT} ]] && MYSQL_PORT="3306"
+	stty erase '^H' && read -p "MYSQL_USER(default:root):" MYSQL_USER
+	[[ -z ${MYSQL_USER} ]] && MYSQL_USER="root"
 	stty erase '^H' && read -p "MYSQL_PASS:" MYSQL_PASS
 	stty erase '^H' && read -p "MYSQL_DB:" MYSQL_DB
 }
@@ -194,8 +198,15 @@ modify_ALL(){
 	modify_WEBAPI_TOKEN
 	modify_WEBAPI_URL
 }
+iptables_OFF(){
+		systemctl disable firewalld &>/dev/null
+		systemctl disable iptables &>/dev/null
+		chkconfig iptables off &>/dev/null
+		iptables -F	&>/dev/null
+}
 SSR_installation(){
-	#basic install
+
+#basic install
 
 	check_system
 	basic_installation
@@ -208,7 +219,7 @@ SSR_installation(){
 	
 	SSR_dependency_installation
 
-	#select api
+#select api
 
 	selectApi
 	echo ${API}
@@ -221,8 +232,7 @@ SSR_installation(){
 	fi
 
 	modify_ALL
-
-		
+	iptables_OFF
 
 	echo -e "${OK} SSR manyuser for glzjin installation complete"
 }
