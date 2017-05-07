@@ -11,13 +11,23 @@
 
 # 更新
 
+## version 2.1
+
+2017-05-07
+
+1.修复因逻辑问题导致配置文件内容异常从而导致的运行报错
+
+2.修复由于 debian 源中有 deb cdrom 而导致的安装中断
+
+### 3.添加了禁用防火墙的相关内容
+
 ## version 2.0
 
 2017-05-07
 
 1.实现输入配置信息、以及全自动安装，支持 modwebapi 及 glzjinmod（mysql connect）
 
-2、修复bug
+2.修复bug
 
 ## version 1.1
 
