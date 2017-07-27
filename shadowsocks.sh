@@ -96,7 +96,7 @@ libsodium_installation(){
 		echo -e "${Error} libsodium download FAIL"
 		exit 1
 	fi
-	tar xf libsodium-1.0.10.tar.gz && cd libsodium-1.0.10
+	tar xf libsodium-1.0.13.tar.gz && cd libsodium-1.0.13
 	./configure && make -j2 && make install
 	if [[ $? -ne 0 ]]; then 
 		echo -e "${Error} libsodium install FAIL"
