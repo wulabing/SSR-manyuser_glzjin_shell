@@ -9,7 +9,7 @@
 #	Special thanks: Toyo
 #====================================================
 
-sh_ver="2.1"
+sh_ver="2.1.1"
 libsodium_folder="/etc/libsodium"
 shadowsocks_install_folder="/root"
 shadowsocks_folder="${shadowsocks_install_folder}/shadowsocks"
