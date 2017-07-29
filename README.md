@@ -3,11 +3,17 @@
 适用于glzjin面板ssr后端的一键安装脚本
 支持全自动化安装
 默认安装目录：/root/shadowsocks
+# 安装方法 （2017-07-29更新）
+git clone https://github.com/wulabing/SSR-manyuser_glzjin_shell.git SSR
+cd SSR
+bash shadowsocks.sh
+设置完后进入安装目录 默认/root/shadowsocks 执行
 
-~下次更新后将支持自定义安装目录~
-已支持自定义安装目录
+git fetch
+git checkout aead
+git pull
 
-下版本将完善对输入配置内容的控制，防止因输入错误导致的异常bug
+安装完成
 
 # 更新
 ## version 2.1.1
