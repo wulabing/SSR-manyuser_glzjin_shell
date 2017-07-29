@@ -4,7 +4,7 @@
 支持全自动化安装
 默认安装目录：/root/shadowsocks
 # 安装方法 （2017-07-29更新）
-
+```
 git clone https://github.com/wulabing/SSR-manyuser_glzjin_shell.git SSR
 
 cd SSR
@@ -18,7 +18,7 @@ git fetch
 git checkout aead
 
 git pull
-
+```
 安装完成
 
 # 更新
