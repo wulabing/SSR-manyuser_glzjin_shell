@@ -11,15 +11,12 @@ cd SSR
 
 bash shadowsocks.sh
 
-设置完后进入安装目录 默认/root/shadowsocks 执行
-
-git fetch
-
-git checkout aead
-
-git pull
+设置完后进入安装目录 默认/root/shadowsocks 运行即可
 ```
 安装完成
+
+输入交互比较水，也没有详细判定，不过能用即可，有功夫再完善，没那么多时间造自行车哈
+有问题可以提issue，看到了会及时回复并尝试修复问题
 
 # 更新
 ## version 2.1.1
