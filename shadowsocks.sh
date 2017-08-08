@@ -205,20 +205,7 @@ iptables_OFF(){
 		iptables -F	&>/dev/null
 }
 SSR_installation(){
-
-#basic install
-
 	check_system
-	basic_installation
-	dependency_installation
-	development_tools_installation
-	libsodium_installation
-	
-	cd ${shadowsocks_install_folder} && git clone -b manyuser https://github.com/glzjin/shadowsocks.git 
-	cd shadowsocks && cp apiconfig.py userapiconfig.py && cp config.json user-config.json
-	
-	SSR_dependency_installation
-
 #select api
 
 	selectApi
@@ -230,7 +217,20 @@ SSR_installation(){
 	else
 		mysql_set
 	fi
+	
+#basic install	
+	basic_installation
+	dependency_installation
+	development_tools_installation
+	libsodium_installation
+	
+	cd ${shadowsocks_install_folder} && git clone -b manyuser https://github.com/glzjin/shadowsocks.git 
+	cd shadowsocks && cp apiconfig.py userapiconfig.py && cp config.json user-config.json
+	
+	SSR_dependency_installation
 
+
+#final option
 	modify_ALL
 	iptables_OFF
 
