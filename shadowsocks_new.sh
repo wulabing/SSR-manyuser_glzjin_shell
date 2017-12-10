@@ -33,18 +33,23 @@ OK="${Green}[OK]${Font}"
 Error="${Red}[Error]${Font}"
 Notification="${Yellow}[Notification]${Font}"
 
-source /etc/os-release
+source /etc/os-release &>/dev/null
 
 check_system(){
-    if [[ "${ID}" == "centos" && ${VERSION_ID} -ge 6 ]];then
+    if [[ "${ID}" == "centos" && ${VERSION_ID} -ge 7 ]];then
         echo -e "${OK} ${GreenBG} 当前系统为 Centos ${VERSION_ID} ${Font} "
         INS="yum"
-    elif [[ "${ID}" == "debian" && ${VERSION_ID} -ge 7 ]];then
+    elif [[ "${ID}" == "debian" && ${VERSION_ID} -ge 8 ]];then
         echo -e "${OK} ${GreenBG} 当前系统为 Debian ${VERSION_ID} ${Font} "
         INS="apt-get"
-    elif [[ "${ID}" == "ubuntu" && `echo "${VERSION_ID}" | cut -d '.' -f1` -ge 14 ]];then
+    elif [[ "${ID}" == "ubuntu" && `echo "${VERSION_ID}" | cut -d '.' -f1` -ge 16 ]];then
         echo -e "${OK} ${GreenBG} 当前系统为 Ubuntu ${VERSION_ID} ${Font} "
         INS="apt-get"
+	elif [[ `rpm -q centos-release |cut -d - -f1` == "centos" && `rpm -q centos-release |cut -d - -f3` == 6 ]];then
+		echo -e "${OK} ${GreenBG} 当前系统为 Centos 6 ${Font} "
+        INS="yum"
+		ID="centos"
+		VERSION_ID="6"
     else
         echo -e "${Error} ${RedBG} 当前系统为 ${ID} ${VERSION_ID} 不在支持的系统列表内，安装中断 ${Font} "
         exit 1
@@ -52,7 +57,7 @@ check_system(){
 }
 basic_installation(){
 	if [[ ${ID} == "centos" ]]; then
-		${INS} install tar wget -y
+		${INS} install tar wget epel-release -y
 	else
 		sed -i '/^deb cdrom/'d /etc/apt/sources.list
 		${INS} update
@@ -62,6 +67,19 @@ basic_installation(){
 
 dependency_installation(){
 		${INS} -y install python-setuptools  && easy_install pip -y 
+		if [[ $? -ne 0 ]]; then
+			echo -e "${Error} ${RedBG} pip installation FAIL ${Font}"
+			echo -e "${Error} ${RedBG} 尝试 yum 安装python-pip ${Font}"
+			sleep 2
+			yum -y install python-pip 
+			if [[ $? -eq 0 ]]; then
+			echo -e "${Error} ${GreenBG} pip installation Successfully ${Font}"
+			sleep 1
+			else
+			echo -e "${Error} ${RedBG} pip installation FAIL ${Font}"
+			exit 1
+			fi
+		fi
 		${INS} install git -y
 }
 development_tools_installation(){
@@ -115,11 +133,6 @@ supervisor_installation(){
 		read -p "请输入shadowsocks所在目录绝对路径（eg：/root/shadowsocks）" shadowsocks_folder
 	fi
 	if [[ ${ID} == "centos" ]];then
-		if [[ ${VERSION_ID} == 7 ]];then
-			rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
-		else
-			exit 2
-		fi
 		yum -y install supervisor
 	else
 		apt-get install supervisor -y
