@@ -20,6 +20,7 @@ cd SSR
 `bash shadowsocks_new.sh | tee sslog.txt`
 
 后端默认安装目录：`/root/shadowsocks`
+
 supervisor 默认配置目录 ：`/etc/supervisor/conf.d/shadowsocks.conf （Centos:/etc/supervisord.conf）`
 
 # 启动方式
