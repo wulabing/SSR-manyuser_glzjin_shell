@@ -52,16 +52,16 @@ check_system(){
 }
 basic_installation(){
 	if [[ ${ID} == "centos" ]]; then
-		${INS} install tar wget  -y
+		${INS} install tar wget -y
 	else
 		sed -i '/^deb cdrom/'d /etc/apt/sources.list
 		${INS} update
-		${INS} install tar wget  -y
+		${INS} install tar wget -y
 	fi
 }
 
 dependency_installation(){
-		${INS} install python-setuptools && easy_install pip -y 
+		${INS} -y install python-setuptools  && easy_install pip -y 
 		${INS} install git -y
 }
 development_tools_installation(){
@@ -103,9 +103,11 @@ SSR_dependency_installation(){
 	if [[ ${ID} == "centos" ]]; then
 		cd ${shadowsocks_folder}
 		${INS} install python-devel libffi-devel openssl-devel -y
-		pip install -r requirements.txt		
+		pip install -r requirements.txt
+		pip install requests		
 	else
 		pip install cymysql
+		pip install requests
 	fi
 }
 supervisor_installation(){
@@ -113,21 +115,55 @@ supervisor_installation(){
 		read -p "请输入shadowsocks所在目录绝对路径（eg：/root/shadowsocks）" shadowsocks_folder
 	fi
 	if [[ ${ID} == "centos" ]];then
-		sleep 1
+		if [[ ${VERSION_ID} == 7 ]];then
+			rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
+		else
+			exit 2
+		fi
+		yum -y install supervisor
 	else
 		apt-get install supervisor -y
-		if [[ $? -ne 0 ]]; then 
-			echo -e "${Error} ${RedBG} supervisor 安装失败 ${Font}"
-			exit 1
-		else
-			echo -e "${OK} ${GreenBG} supervisor 安装成功 ${Font}"
-			sleep 1
-		fi
 	fi
+	if [[ $? -ne 0 ]]; then 
+		echo -e "${Error} ${RedBG} supervisor 安装失败 ${Font}"
+		exit 1
+	else
+		echo -e "${OK} ${GreenBG} supervisor 安装成功 ${Font}"
+		sleep 1
+	fi
+	
 
 }
-supervisor_conf_modify(){
+supervisor_conf_modify_debian(){
 	cat>${suerpvisor_conf_dir}/shadowsocks.conf<<EOF
+[program:shadowsocks]
+command = python ${shadowsocks_folder}/server.py
+stdout_logfile = /var/log/ssmu.log
+stderr_logfile = /var/log/ssmu.log
+user = root
+autostart = true
+autorestart = true
+EOF
+
+	echo -e "${OK} ${GreenBG} supervisor 配置导入成功 ${Font}"
+	sleep 1
+}
+supervisor_conf_modify_ubuntu(){
+	cat>${suerpvisor_conf_dir}/shadowsocks.conf<<EOF
+[program:shadowsocks]
+command = python ${shadowsocks_folder}/server.py
+stdout_logfile = /var/log/ssmu.log
+stderr_logfile = /var/log/ssmu.log
+user = root
+autostart = true
+autorestart = true
+EOF
+
+	echo -e "${OK} ${GreenBG} supervisor 配置导入成功 ${Font}"
+	sleep 1
+}
+supervisor_conf_modify_centos(){
+	cat>>/etc/supervisord.conf<<EOF
 [program:shadowsocks]
 command = python ${shadowsocks_folder}/server.py
 stdout_logfile = /var/log/ssmu.log
@@ -254,28 +290,29 @@ SSR_installation(){
 	iptables_OFF
 
 	echo -e "${OK} ${GreenBG} SSR manyuser for glzjin installation complete ${Font}"
-	sleep3
+	sleep 1
 }
+
 option(){
 	check_system
 	sleep 2
 	echo -e "${Red} 请选择安装内容 ${Font}"
 	echo -e "1. SSR + supervisor"
 	echo -e "2. SSR "
-	echo -e "3. supervisor "
+	echo -e "3. supervisor"
 	read -p "input:" number
 	case ${number} in
 		1)
 			SSR_installation
 			supervisor_installation
-			supervisor_conf_modify
+			supervisor_conf_modify_${ID}
 			;;
 		2)
 			SSR_installation
 			;;
 		3)
 			supervisor_installation
-			supervisor_conf_modify
+			supervisor_conf_modify_${ID}
 			;;
 		*)
 			exit 1
