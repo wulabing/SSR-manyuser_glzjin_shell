@@ -2,7 +2,7 @@
 
 * 适用于glzjin面板ssr后端的一键安装脚本 实现输入配置信息、以及全自动安装，支持 modwebapi 及 glzjinmod（mysql connect）
 * 旧版支持 Ubuntu14.04+ / Centos 6+ / Debian7+ 
-* 新版(supervisor版本)支持 Ubuntu16.04+ / Centos 7+ / Debian 8+
+* 新版(supervisor版本)支持 Ubuntu16.04+ / Centos 6+ / Debian 8+
 * 默认安装目录：/root/shadowsocks
 
 # 安装方法 （ 2017/12/10 更新）
@@ -36,14 +36,10 @@ supervisor 默认配置目录 ：`/etc/supervisor/conf.d/shadowsocks.conf （Cen
 
 ### 已安装 supervisor：
 
-* 启动 supervisor ：`systemctl start supervisor`
-* 重启 supervisor ：`systemctl restart supervisor`
-* 添加 supervisor 开机启动： `systemctl enable supervisor`
-
-#### 启动 shadowsocks 前请确保 supervisor 已启动
-
-* 启动 shadowsocks ：`supervisorctl start shadowsocks`
-* 重启 shadowsocks ：`supervisorctl restart shadowsocks`
+* 启动 shadowsocks ：`systemctl start supervisor（centos6：service supervisord start）`
+* 停止 shadowsocks ：`systemctl start supervisor（centos6：service supervisord stop）`
+* 重启 shadowsocks ：`systemctl restart supervisor（centos6：service supervisord start）`
+* 添加 supervisor 开机启动： `systemctl enable supervisor(centos6:chkconfig --add supervisord)`
 * 日志 ：`tail -f /var/log/sslog.txt`
 
 # 问题反馈
