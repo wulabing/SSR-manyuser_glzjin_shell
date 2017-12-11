@@ -68,12 +68,11 @@ basic_installation(){
 dependency_installation(){
 		${INS} -y install python-setuptools  && easy_install pip -y 
 		if [[ $? -ne 0 ]]; then
-			echo -e "${Error} ${RedBG} pip installation FAIL ${Font}"
-			echo -e "${Error} ${RedBG} 尝试 yum 安装python-pip ${Font}"
+			echo -e "${OK} ${GreenBG} 尝试 yum 安装 python-pip ${Font}"
 			sleep 2
 			yum -y install python-pip 
 			if [[ $? -eq 0 ]]; then
-			echo -e "${Error} ${GreenBG} pip installation Successfully ${Font}"
+			echo -e "${OK} ${GreenBG} pip installation Successfully ${Font}"
 			sleep 1
 			else
 			echo -e "${Error} ${RedBG} pip installation FAIL ${Font}"
@@ -221,7 +220,7 @@ modify_MYSQL(){
 	sed -i '/MYSQL_DB/c \MYSQL_DB = '\'${MYSQL_DB}\''' ${config}
 }
 selectApi(){
-	echo -e "${Yellow} please select the api: ${Font}"
+	echo -e "${Yellow} 请选择 API 模式: ${Font}"
 	echo -e "1.modwebapi"
 	echo -e "2.glzjinmod(mysql_connect)"
 	stty erase '^H' && read -p "(default:modwebapi):" API
@@ -236,8 +235,10 @@ selectApi(){
 }
 common_set(){
 	stty erase '^H' && read -p "NODE_ID(num_only):" NODE_ID
-	stty erase '^H' && read -p "SPEEDTEST_CIRCLE(num_only):" SPEEDTEST
-	stty erase '^H' && read -p "CLOUDSAFE_ON(0 or 1):" CLOUDSAFE
+	stty erase '^H' && read -p "SPEEDTEST_CIRCLE(num_only,default:0):" SPEEDTEST
+	[[ -z ${SPEEDTEST} ]] && SPEEDTEST="0"
+	stty erase '^H' && read -p "CLOUDSAFE_ON(0 or 1,default:0):" CLOUDSAFE
+	[[ -z ${CLOUDSAFE} ]] && CLOUDSAFE="0"
 	stty erase '^H' && read -p "MU_SUFFIX(default:zhaoj.in):" MU_SUFFIX
 	[[ -z ${MU_SUFFIX} ]] && MU_SUFFIX="zhaoj.in"
 	stty erase '^H' && read -p "MU_REGEX(default:%5m%id.%suffix):" MU_REGEX
@@ -248,13 +249,14 @@ modwebapi_set(){
 	stty erase '^H' && read -p "WEBAPI_TOKEN(example: zhaoj.in):" WEBAPI_TOKEN
 }
 mysql_set(){
-	stty erase '^H' && read -p "MYSQL_HOST(IP addr):" MYSQL_HOST
+	stty erase '^H' && read -p "MYSQL_HOST(IP addr or domain):" MYSQL_HOST
 	stty erase '^H' && read -p "MYSQL_PORT(default:3306):" MYSQL_PORT
 	[[ -z ${MYSQL_PORT} ]] && MYSQL_PORT="3306"
 	stty erase '^H' && read -p "MYSQL_USER(default:root):" MYSQL_USER
 	[[ -z ${MYSQL_USER} ]] && MYSQL_USER="root"
 	stty erase '^H' && read -p "MYSQL_PASS:" MYSQL_PASS
-	stty erase '^H' && read -p "MYSQL_DB:" MYSQL_DB
+	stty erase '^H' && read -p "MYSQL_DB(default:sspanel):" MYSQL_DB
+	[[ -z ${MYSQL_DB} ]] && MYSQL_DB="sspanel"
 }
 modify_ALL(){
 	modify_CLOUDSAFE
@@ -302,7 +304,7 @@ SSR_installation(){
 	modify_ALL
 	iptables_OFF
 
-	echo -e "${OK} ${GreenBG} SSR manyuser for glzjin installation complete ${Font}"
+	echo -e "${OK} ${GreenBG} SSR manyuser for glzjin 安装完成 ${Font}"
 	sleep 1
 }
 
@@ -328,6 +330,7 @@ option(){
 			supervisor_conf_modify_${ID}
 			;;
 		*)
+			echo -e "${Error} ${RedBG} 请输入正确的序号 ${Font}"
 			exit 1
 			;;
 	esac
