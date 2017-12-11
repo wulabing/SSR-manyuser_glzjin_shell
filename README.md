@@ -48,6 +48,13 @@ supervisor 默认配置目录 ：`/etc/supervisor/conf.d/shadowsocks.conf （Cen
 
 # 更新
 ## 2017-12-10
+V3.1
+* 添加 部分选项默认配置
+* 修复 部分交互提示错误
+* 添加 Centos6 支持
+* 修复 部分bug
+
+## 2017-12-10
 V3.0
 ### 从本版本开始 仅支持具有 Systemd 特性的发行版系统 并启用 shadowsocks_new.sh 更新，旧版本停止维护
 
