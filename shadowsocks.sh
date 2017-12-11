@@ -114,9 +114,11 @@ SSR_dependency_installation(){
 		yum -y install python-devel
 		yum -y install libffi-devel
 		yum -y install openssl-devel
+		pip install requests
 		pip install -r requirements.txt		
 	else
 		pip install cymysql
+		pip install requests
 	fi
 }
 
