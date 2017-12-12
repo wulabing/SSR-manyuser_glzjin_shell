@@ -47,6 +47,10 @@ supervisor 默认配置目录 ：`/etc/supervisor/conf.d/shadowsocks.conf （Cen
 携带 sslog.txt 文件提交 issue
 
 # 更新
+## 2017-12-12
+V3.11
+* 修复 easy_install pip 出错后 python-pip 安装的逻辑错误
+
 ## 2017-12-10
 V3.1
 * 添加 部分选项默认配置
