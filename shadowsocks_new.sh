@@ -479,13 +479,15 @@ start_management(){
 	if [[ $? -ne 0  ]];then
 		echo -e "${Notification} 检测到未安装 supervisord"
 		/root/shadowsocks/logrun.sh
+		sleep 2
 		echo -e "${OK} ${GreenBG} 后端已启动 ${Font}"
 	else
 		echo -e "${OK} 检测到已安装 supervisord"
 		command -v systemctl >/dev/null
 		if [[  $? -ne 0 ]];then
 			service supervisord start
-			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -ge "0" ]] && {
+			sleep 2
+			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -ge 1 ]] && {
 				echo -e "${OK} ${GreenBG} 后端（supervisord）已启动 ${Font}"
 			} || {
 				echo -e "${Error} ${RedBG} 后端启动失败 ${Font}"
@@ -493,7 +495,8 @@ start_management(){
 			}
 		else
 			systemctl start supervisor
-			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -ge "0" ]] && {
+			sleep 2
+			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -ge 1 ]] && {
 				echo -e "${OK} ${GreenBG} 后端（supervisord）已启动 ${Font}"
 			} || {
 				echo -e "${Error} ${RedBG} 后端启动失败 ${Font}"
@@ -508,13 +511,15 @@ stop_management(){
 	if [[ $? -ne 0 ]];then
 		echo -e "${Notification} 检测到未安装 supervisord"
 		/root/shadowsocks/stop.sh
+		sleep 2
 		echo -e "${OK} ${GreenBG} 后端已关闭 ${Font}"
 	else
 		echo -e "${OK} 检测到已安装 supervisord"
 		command -v systemctl >/dev/null
 		if [[ $? -ne 0 ]];then
 			service supervisord stop
-			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -eq "0" ]] && {
+			sleep 2
+			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -eq 0 ]] && {
 				echo -e "${OK} ${GreenBG} 后端（supervisord）已关闭 ${Font}"
 			} || {
 				echo -e "${Error} ${RedBG} 后端关闭失败 ${Font}"
@@ -522,7 +527,8 @@ stop_management(){
 			}
 		else
 			systemctl stop supervisor
-			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -eq "0" ]] && {
+			sleep 2
+			[[ `ps -ef | grep supervisor |grep -v grep | wc -l` -eq 0 ]] && {
 				echo -e "${OK} ${GreenBG} 后端（supervisord）已关闭 ${Font}"
 			} || {
 				echo -e "${Error} ${RedBG} 后端关闭失败 ${Font}"
@@ -562,7 +568,7 @@ management(){
 			force_stop
 			;;
 		status)
-			if [[ `ps -ef | grep server.py |grep -v grep | wc -l` -ge "1" ]];then
+			if [[ `ps -ef | grep server.py |grep -v grep | wc -l` -ge 1 ]];then
 				echo -e "${OK} ${GreenBG} 后端已启动 ${Font}"
 			else
 				echo -e "${OK} ${RedBG} 后端未启动 ${Font}"
