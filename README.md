@@ -1,52 +1,67 @@
-# sspanel v3 glzjin 后端一键安装脚本
+# sspanel v3 glzjin 后端一键安装配置管理脚本
 
-* 适用于glzjin面板ssr后端的一键安装脚本 实现输入配置信息、以及全自动安装，支持 modwebapi 及 glzjinmod（mysql connect）
+* 适用于glzjin面板ssr后端的一键安装脚本 实现输入配置信息、以及全自动安装，配置一键修改，一键启动暂停等功能 支持 modwebapi 及 glzjinmod（mysql connect）
 * 旧版支持 Ubuntu14.04+ / Centos 6+ / Debian7+ 
 * 新版(supervisor版本)支持 Ubuntu16.04+ / Centos 6+ / Debian 8+
 * 默认安装目录：/root/shadowsocks
+* 请注意：4.0版本未经过严格的测试，若出现问题请及时提交 issue ，本人将会对相关内容进行排查，感谢理解
+* 由于零散更新，内容上出现部分代码冗余，会在未来进行部分代码重构
 
-# 安装方法 （ 2017/12/10 更新）
+# 安装方法 （ 2017/12/21 更新）
 ```
 git clone https://github.com/wulabing/SSR-manyuser_glzjin_shell.git SSR
 
 cd SSR
 ```
 旧版本安装：
+```
+chmod +x shadowsocks.sh
 
-`bash shadowsocks.sh | tee sslog.txt`
-
+./shadowsocks.sh | tee ss.log
+```
 新版本安装：
+```
+chmod +x shadowsocks_new.sh
 
-`bash shadowsocks_new.sh | tee sslog.txt`
-
+./shadowsocks_new.sh install | tee ss.log
+```
 # 相关目录
 
 后端默认安装目录：`/root/shadowsocks`
 
 supervisor 默认配置目录 ：`/etc/supervisor/conf.d/shadowsocks.conf （Centos:/etc/supervisord.conf）`
 
-# 启动方式
+# 启动方式（）
 
-### 未安装 supervisor：
+### 旧版本：
 
 * 启动：`/root/shadowsocks/log.sh`
 * 启动（日志模式）：`/root/shadowsocks/logrun.sh`
 * 停止：`/root/shadowsocks/stop.sh`
 * 日志：`/root/shadowsocks/tail.sh`
 
-### 已安装 supervisor：
+### 新版本：
 
-* 启动 shadowsocks ：`systemctl start supervisor（centos6：service supervisord start）`
-* 停止 shadowsocks ：`systemctl start supervisor（centos6：service supervisord stop）`
-* 重启 shadowsocks ：`systemctl restart supervisor（centos6：service supervisord start）`
-* 添加 supervisor 开机启动： `systemctl enable supervisor(centos6:chkconfig --add supervisord)`
+* 启动  shadowsocks ：`./shadowsocks_new.sh start`
+* 停止  shadowsocks ：`./shadowsocks_new.sh stop`
+* 重启  shadowsocks ：`./shadowsocks_new.sh restart`
+* 强制停止 shadowsocks ：`./shadowsocks_new.sh fstop`
+* 配置信息变更：`./shadowsocks_new.sh modify`
+* 添加 supervisor 开机启动： `systemctl enable supervisor (centos6:chkconfig --add supervisord)`
 * 日志 ：`tail -f /var/log/sslog.txt`
+
 
 # 问题反馈
 
-携带 sslog.txt 文件提交 issue
+携带 ss.log 文件提交 issue
 
 # 更新
+## 2017-12-21
+V4.0
+* 添加 基本init选项，可以直接通过脚本控制后端启动，暂停等基本功能
+* 添加 配置信息自助修改功能
+* 修复 细节性bug
+
 ## 2017-12-12
 V3.11
 * 修复 easy_install pip 出错后 python-pip 安装的逻辑错误
