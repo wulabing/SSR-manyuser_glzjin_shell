@@ -128,7 +128,7 @@ SSR_dependency_installation(){
 		pip install -r requirements.txt
 		pip install requests		
 	else
-		pip install cymysql
+		pip install cymysql==0.8.4
 		pip install requests
 	fi
 }
