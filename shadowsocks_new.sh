@@ -104,12 +104,12 @@ development_tools_installation(){
 }
 libsodium_installation(){
 	mkdir -p ${libsodium_folder} && cd ${libsodium_folder}
-	wget https://github.com/jedisct1/libsodium/releases/download/1.0.13/libsodium-1.0.13.tar.gz
-	if [[ ! -f ${libsodium_folder}/libsodium-1.0.13.tar.gz ]]; then
+	wget https://github.com/jedisct1/libsodium/releases/download/1.0.16/libsodium-1.0.16.tar.gz
+	if [[ ! -f ${libsodium_folder}/libsodium-1.0.16.tar.gz ]]; then
 		echo -e "${Error} ${RedBG} libsodium download FAIL ${Font}"
 		exit 1
 	fi
-	tar xf libsodium-1.0.13.tar.gz && cd libsodium-1.0.13
+	tar xf libsodium-1.0.16.tar.gz && cd libsodium-1.0.16
 	./configure && make -j2 && make install
 	if [[ $? -ne 0 ]]; then 
 		echo -e "${Error} ${RedBG} libsodium install FAIL ${Font}"
