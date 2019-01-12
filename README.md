@@ -13,12 +13,7 @@ git clone https://github.com/wulabing/SSR-manyuser_glzjin_shell.git SSR
 
 cd SSR
 ```
-旧版本安装：
-```
-chmod +x shadowsocks.sh
-
-./shadowsocks.sh | tee ss.log
-```
+旧版本停止维护，目前不可用
 新版本安装：
 ```
 chmod +x shadowsocks_new.sh
