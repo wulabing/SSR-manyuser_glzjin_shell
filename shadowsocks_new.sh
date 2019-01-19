@@ -224,7 +224,7 @@ modify_MYSQL_HOST(){
 	sed -i '/MYSQL_HOST/c \MYSQL_HOST = '\'${MYSQL_HOST}\''' ${config}
 }
 modify_MYSQL_PORT(){
-	sed -i '/MYSQL_PORT/c \MYSQL_PORT = '${MYSQL_PORT}'' ${config}
+	sed -i '/MYSQL_PORT/c \MYSQL_PORT = '\'${MYSQL_PORT}\''' ${config}
 }
 modify_MYSQL_USER(){
 	sed -i '/MYSQL_USER/c \MYSQL_USER = '\'${MYSQL_USER}\''' ${config}
